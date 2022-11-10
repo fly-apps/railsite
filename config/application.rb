@@ -8,6 +8,7 @@ Bundler.require(*Rails.groups)
 
 module Railsite
   class Application < Rails::Application
+    # Configure the data path where all of our data will be persisted.
     config.data_path = if Rails.env.production?
       # Read the destination from the fly.toml file so we don't have to bother
       # you to set an ENV var.
@@ -25,6 +26,9 @@ module Railsite
       # Just use the `./storage` path since it exists.
       Rails.root.join("storage")
     end
+
+    # Run ActionCable within the app.
+    config.action_cable.mount_path = '/websocket'
 
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0

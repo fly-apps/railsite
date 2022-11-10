@@ -17,13 +17,45 @@ This doesn't work yet, but when it does, you'll run this:
 rails new --template https://raw.githubusercontent.com/fly-apps/railsite/main/template.rb
 ```
 
-Then to deploy.
+Then provision on Fly. Answer "No" to creating Redis & Postgres.
 
 ```
 fly launch
 ```
 
-And its off to the races!
+Now deploy. This will fail.
+
+```
+fly deploy
+```
+
+Then add storage.
+
+```
+fly volumes create myapp_data
+```
+
+Then add to the `fly.toml file`
+
+```
+[mounts]
+  source = "myapp_data"
+  destination = "/data"
+```
+
+Deploy that one more time to pickup the new storage volume location.
+
+```
+fly deploy
+```
+
+And lets check it out:
+
+```
+fly open
+```
+
+There's your app!
 
 ## This project
 
@@ -60,4 +92,10 @@ production:
 
 ### ActiveJob
 
+**DANGER:** This project currently uses [Active Job Async adapter](https://api.rubyonrails.org/classes/ActiveJob/QueueAdapters/AsyncAdapter.html), which will lose jobs when the server is restared. In fact, the docs say "it's a poor fit for production since it drops pending jobs on restart".
+
+An adapter needs to be created that writes the job statuses to disk so they can survive server restarts.
+
 ### ActionCable
+
+**DANGER:** This project runs WebSockets [In-App](https://guides.rubyonrails.org/action_cable_overview.html#in-app).

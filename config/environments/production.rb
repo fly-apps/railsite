@@ -59,8 +59,8 @@ Rails.application.configure do
   config.cache_store = :file_store, Rails.configuration.data_path.join("cache")
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
-  # config.active_job.queue_adapter     = :resque
-  # config.active_job.queue_name_prefix = "railsite_production"
+  # If the server is rebooted, these jobs will be lost.
+  config.active_job.queue_adapter = :async
 
   config.action_mailer.perform_caching = false
 
