@@ -1,0 +1,1 @@
+# Future home of a Rails template that ships with minimal service dependencies
