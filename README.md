@@ -28,3 +28,36 @@ And its off to the races!
 ## This project
 
 The source code in this Rails project will be a full blown Rails app that you can clone and deploy to production if you don't want to spin up your own Rails app.
+
+### Configuration
+
+The `storage.yml` file is where we will instruct Rails to store all of our content. By default, it puts content in the `./storage` directory. This is where we will mount a volume in Fly.
+
+### Production cache
+
+Most production Rails applications store their caches in Redis. We're going to use the File System store so our cache reminds intact if our server crashes or reboots between deploys.
+
+```
+# ./app/config/production.rb
+config.cache_store = :file_store, Rails.root.join("storage/cache")
+```
+
+* https://guides.rubyonrails.org/caching_with_rails.html#activesupport-cache-filestore
+
+### ActiveStorage
+
+We don't have to do anything because it's already set to store files at `Rails.root.join("storage")`
+
+### Sqlite
+
+We need to store our Database on the volume that we'll mount.
+
+```
+production:
+  <<: *default
+  database: <%= Rails.root.join("storage/database.sqlite3") %>
+```
+
+### ActiveJob
+
+### ActionCable
